@@ -734,14 +734,24 @@
   const deck = document.getElementById('deck');
   const pages = Array.from(document.querySelectorAll('.page'));
   const counter = document.getElementById('pageCount');
-  function pad(n){return n.toString().padStart(2,'0');}
+  
+  function pad(n){ return n.toString().padStart(2,'0'); }
+  
   function currentIndex(){
     let idx = 0, best = Infinity;
-    pages.forEach((p,i)=>{ const d = Math.abs(p.getBoundingClientRect().top); if(d < best){best = d; idx = i;} });
+    pages.forEach((p,i)=>{ 
+      const d = Math.abs(p.getBoundingClientRect().top); 
+      if(d < best){ best = d; idx = i; } 
+    });
     return idx;
   }
-  function updateCounter(){ counter.textContent = pad(currentIndex()+1) + ' / ' + pad(pages.length); }
+  
+  function updateCounter(){ 
+    counter.textContent = pad(currentIndex()+1) + ' / ' + pad(pages.length); 
+  }
+  
   deck.addEventListener('scroll', ()=>{ window.requestAnimationFrame(updateCounter); });
+  
   function goToPage(i){
     i = Math.max(0, Math.min(i, pages.length-1));
     const target = pages[i];
@@ -763,14 +773,18 @@
       setTimeout(applyFlip, 550);
     }
   }
+  
   document.getElementById('nextBtn').addEventListener('click', ()=>{ goToPage(currentIndex()+1); });
   document.getElementById('prevBtn').addEventListener('click', ()=>{ goToPage(currentIndex()-1); });
+  
   window.addEventListener('keydown', (e)=>{
     if(e.key==='ArrowDown' || e.key==='PageDown'){ goToPage(currentIndex()+1); }
     if(e.key==='ArrowUp' || e.key==='PageUp'){ goToPage(currentIndex()-1); }
   });
+  
   updateCounter();
-<script>
+
+  // ---------- astrolabe animation ----------
   const astrolabe = document.querySelector('.astrolabe');
   const coverPage = document.querySelector('.cover');
   if(astrolabe && coverPage){
@@ -788,30 +802,39 @@
   const audio = document.getElementById('bgMusic');
   const status = document.getElementById('musicStatus');
   let playing = false;
+
   function showStatus(msg){
     status.textContent = msg;
     status.style.display = 'block';
     clearTimeout(showStatus._t);
     showStatus._t = setTimeout(()=>{ status.style.display = 'none'; }, 5000);
   }
+
   audio.addEventListener('error', ()=>{
     const codes = {1:'chargement interrompu',2:'erreur réseau',3:'décodage impossible (format non supporté)',4:'source introuvable ou bloquée (CORS)'};
     const err = audio.error;
     showStatus('Musique indisponible : ' + (err ? (codes[err.code] || 'erreur inconnue') : 'erreur inconnue'));
     musicBtn.classList.remove('playing'); musicBtn.textContent = '🎵'; playing = false;
   });
+
   musicBtn.addEventListener('click', ()=>{
     if(playing){
-      audio.pause(); musicBtn.classList.remove('playing'); musicBtn.textContent = '🎵'; playing = false;
+      audio.pause(); 
+      musicBtn.classList.remove('playing'); 
+      musicBtn.textContent = '🎵'; 
+      playing = false;
       return;
     }
     audio.play().then(()=>{
-      musicBtn.classList.add('playing'); musicBtn.textContent = '🔊'; playing = true;
+      musicBtn.classList.add('playing'); 
+      musicBtn.textContent = '🔊'; 
+      playing = true;
     }).catch((e)=>{
       showStatus('Lecture bloquée : ' + (e && e.message ? e.message : 'clique à nouveau, ou vérifie ta connexion'));
     });
   });
 </script>
+
 
 </body>
 </html>
